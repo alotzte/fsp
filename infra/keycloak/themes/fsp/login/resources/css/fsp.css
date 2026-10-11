@@ -1,0 +1,84 @@
+/* Оформление страниц Keycloak в стиле ФСП. Переопределяет keycloak.v2 (PatternFly v5).
+   Палитра: как в frontend/src/index.css: #402FFF, #EC1D35, #EDEDED, #C8C9CA, #1B1C21. */
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/JetBrainsMono-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  src: url('../fonts/JetBrainsMono-SemiBold.woff2') format('woff2');
+  font-weight: 600;
+  font-display: swap;
+}
+
+:root {
+  --fsp-blue: #402fff;
+  --fsp-blue-hover: #2f1fe0;
+  --fsp-red: #ec1d35;
+  --fsp-light: #ededed;
+  --fsp-gray: #c8c9ca;
+  --fsp-dark: #1b1c21;
+
+  --keycloak-card-top-color: var(--fsp-blue);
+
+  --pf-v5-global--primary-color--100: var(--fsp-blue);
+  --pf-v5-global--primary-color--200: var(--fsp-blue-hover);
+  --pf-v5-global--link--Color: var(--fsp-blue);
+  --pf-v5-global--link--Color--hover: var(--fsp-blue-hover);
+  --pf-v5-global--danger-color--100: var(--fsp-red);
+  --pf-v5-global--Color--100: var(--fsp-dark);
+  --pf-v5-global--BorderColor--100: var(--fsp-gray);
+  --pf-v5-global--FontFamily--text: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --pf-v5-global--FontFamily--heading: 'JetBrains Mono', ui-monospace, monospace;
+  --pf-v5-global--BorderRadius--sm: 0.5rem;
+}
+
+/* Светлый фон вместо картинки Keycloak; синяя полоса сверху: как линии в графике брендбука. */
+.login-pf body {
+  background: linear-gradient(var(--fsp-blue) 0 6px, #f7f7f8 6px);
+}
+
+.pf-v5-c-login__main {
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgb(27 28 33 / 6%), 0 8px 24px rgb(27 28 33 / 6%);
+}
+
+/* Вместо названия realm: логотип ФСП. Текст оставляем для скринридеров. */
+#kc-header-wrapper {
+  height: 48px;
+  margin: 0 auto;
+  background: url('../img/logo-full.svg') no-repeat center / contain;
+  color: transparent !important;
+  font-size: 0;
+}
+
+#kc-page-title {
+  font-family: var(--pf-v5-global--FontFamily--heading);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.pf-v5-c-button.pf-m-primary {
+  font-weight: 600;
+}
+
+/* «Назад в приложение» на страницах ошибок и сообщений: заметной кнопкой, а не мелкой ссылкой. */
+.fsp-back-link {
+  display: inline-block;
+  margin-top: var(--pf-v5-global--spacer--md);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--fsp-blue);
+  color: #fff !important;
+  font-weight: 600;
+  text-decoration: none !important;
+}
+
+.fsp-back-link:hover {
+  background: var(--fsp-blue-hover);
+}

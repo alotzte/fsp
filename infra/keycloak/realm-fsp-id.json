@@ -1,0 +1,153 @@
+{
+  "realm": "fsp-id",
+  "enabled": true,
+  "displayName": "ФСП ID · тестовый стенд",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "resetPasswordAllowed": false,
+  "rememberMe": false,
+  "loginTheme": "fsp",
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "ru"
+  ],
+  "defaultLocale": "ru",
+  "components": {
+    "org.keycloak.userprofile.UserProfileProvider": [
+      {
+        "providerId": "declarative-user-profile",
+        "subComponents": {},
+        "config": {
+          "kc.user.profile.config": [
+            "{\"unmanagedAttributePolicy\": \"ADMIN_VIEW\", \"attributes\": [{\"name\": \"username\", \"displayName\": \"${username}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"validations\": {\"length\": {\"min\": 3, \"max\": 255}}}, {\"name\": \"email\", \"displayName\": \"${email}\", \"required\": {\"roles\": [\"user\"]}, \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}, \"validations\": {\"email\": {}}}, {\"name\": \"firstName\", \"displayName\": \"${firstName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}}, {\"name\": \"lastName\", \"displayName\": \"${lastName}\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}}, {\"name\": \"fsp_id\", \"displayName\": \"Номер участника ФСП\", \"permissions\": {\"view\": [\"admin\", \"user\"], \"edit\": [\"admin\"]}}]}"
+          ]
+        }
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "fsp-career",
+      "name": "ФСП Карьера",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "${FSP_ID_CLIENT_SECRET}",
+      "rootUrl": "${PUBLIC_URL}",
+      "baseUrl": "/candidate",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [
+        "${PUBLIC_URL}/api/v1/candidate/fsp/callback"
+      ],
+      "webOrigins": [
+        "${PUBLIC_URL}"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      },
+      "protocolMappers": [
+        {
+          "name": "fsp_id",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.attribute": "fsp_id",
+            "claim.name": "fsp_id",
+            "jsonType.label": "String",
+            "id.token.claim": "true",
+            "access.token.claim": "false",
+            "userinfo.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "athlete1",
+      "enabled": true,
+      "email": "athlete1@fsp-id.demo",
+      "emailVerified": true,
+      "firstName": "Алина",
+      "lastName": "Морозова",
+      "attributes": {
+        "fsp_id": [
+          "FSP-100001"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "fsp-demo",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "athlete2",
+      "enabled": true,
+      "email": "athlete2@fsp-id.demo",
+      "emailVerified": true,
+      "firstName": "Тимур",
+      "lastName": "Галиев",
+      "attributes": {
+        "fsp_id": [
+          "FSP-100002"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "fsp-demo",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "athlete3",
+      "enabled": true,
+      "email": "athlete3@fsp-id.demo",
+      "emailVerified": true,
+      "firstName": "Ксения",
+      "lastName": "Белова",
+      "attributes": {
+        "fsp_id": [
+          "FSP-100003"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "fsp-demo",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "username": "athlete4",
+      "enabled": true,
+      "email": "athlete4@fsp-id.demo",
+      "emailVerified": true,
+      "firstName": "Павел",
+      "lastName": "Орлов",
+      "attributes": {
+        "fsp_id": [
+          "FSP-100004"
+        ]
+      },
+      "credentials": [
+        {
+          "type": "password",
+          "value": "fsp-demo",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

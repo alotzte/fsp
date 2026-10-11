@@ -1,0 +1,107 @@
+# Все модели импортируются здесь, чтобы Alembic видел их в Base.metadata.
+from app.services.db.models.assessment import (
+    AssessmentAttempt,
+    AttemptItem,
+    CandidateGrade,
+    ItemKind,
+)
+from app.services.db.models.candidates import (
+    CandidateProfile,
+    CandidateSkill,
+    Education,
+    ProfileSection,
+    WorkExperience,
+    WorkFormat,
+)
+from app.services.db.models.cases import WeeklyCase
+from app.services.db.models.companies import (
+    Company,
+    CompanyApiToken,
+    CompanyInvite,
+    CompanyMember,
+    CompanyReport,
+    CompanyRole,
+    ReportReason,
+)
+from app.services.db.models.consents import Consent, ConsentKind
+from app.services.db.models.dictionaries import Grade, Industry, Skill, SkillKind, Specialization
+from app.services.db.models.files import StoredFile
+from app.services.db.models.fsp import (
+    FspAthleteRank,
+    FspAward,
+    FspDiscipline,
+    FspEvent,
+    FspLink,
+    FspResult,
+    FspSportRank,
+)
+from app.services.db.models.hiring import (
+    PENDING_STATUSES,
+    ContactReveal,
+    DeclineReason,
+    HiringNeed,
+    HiringNeedSkill,
+    Invitation,
+    InvitationDirection,
+    InvitationMessage,
+    InvitationStatus,
+    ShortlistEntry,
+)
+from app.services.db.models.users import (
+    JURY_DEMO_PREFIX,
+    SEED_DEMO_PREFIX,
+    AuthSession,
+    User,
+    UserRole,
+)
+
+__all__ = [
+    "JURY_DEMO_PREFIX",
+    "PENDING_STATUSES",
+    "SEED_DEMO_PREFIX",
+    "AssessmentAttempt",
+    "AttemptItem",
+    "AuthSession",
+    "CandidateGrade",
+    "CandidateProfile",
+    "CandidateSkill",
+    "Company",
+    "CompanyApiToken",
+    "CompanyInvite",
+    "CompanyMember",
+    "CompanyReport",
+    "CompanyRole",
+    "Consent",
+    "ConsentKind",
+    "ContactReveal",
+    "DeclineReason",
+    "Education",
+    "FspAthleteRank",
+    "FspAward",
+    "FspDiscipline",
+    "FspEvent",
+    "FspLink",
+    "FspResult",
+    "FspSportRank",
+    "Grade",
+    "HiringNeed",
+    "HiringNeedSkill",
+    "Industry",
+    "Invitation",
+    "InvitationDirection",
+    "InvitationMessage",
+    "InvitationStatus",
+    "ItemKind",
+    "ProfileSection",
+    "ReportReason",
+    "ShortlistEntry",
+    "Skill",
+    "SkillKind",
+    "Specialization",
+    "StoredFile",
+    "User",
+    "UserRole",
+    "WeeklyCase",
+    "WorkExperience",
+    "WorkFormat",
+]

@@ -1,0 +1,74 @@
+# Шаблон: при старте nginx подставляет ${BASE_PATH} из окружения (envsubst образа nginx).
+# Единственная точка входа: фронт, API, админка, Keycloak и Mailpit на одном origin.
+# Поэтому нет CORS, а cookie сессии видна и фронту, и бэку.
+
+# За внешним HTTPS-прокси (HAProxy) сохраняем его схему, иначе Keycloak и бэк решат, что запрос по http.
+map $http_x_forwarded_proto $forwarded_proto {
+    default $http_x_forwarded_proto;
+    ''      $scheme;
+}
+
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+server {
+    listen 80;
+    client_max_body_size 20m;
+    # Свои редиректы nginx (например /mail → /mail/): относительные. Абсолютные он строит
+    # из внутреннего порта контейнера (80) и теряет внешний порт gateway.
+    absolute_redirect off;
+    server_tokens off;
+
+    # Docker DNS + адреса в переменных: имена сервисов резолвятся на каждый запрос, а не один раз
+    # при старте. Иначе после пересоздания контейнера (новый IP) gateway отдавал бы 502.
+    resolver 127.0.0.11 valid=10s ipv6=off;
+    set $backend_upstream http://backend:8000;
+    set $keycloak_upstream http://keycloak:8080;
+    set $mailpit_upstream http://mailpit:8025;
+    set $frontend_upstream http://frontend:80;
+
+    # Заголовки для всех проксируемых сервисов. $http_host, а не $host: сохраняет порт,
+    # иначе редиректы бэка и Keycloak ведут на :80.
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $forwarded_proto;
+
+    location ~ ^/(api|admin|docs|openapi\.json)(/|$) {
+        # По ASGI путь включает root_path (= BASE_PATH на бэке): возвращаем срезанный префикс.
+        proxy_pass $backend_upstream${BASE_PATH}$request_uri;
+    }
+
+    # Автоматический редирект nginx (/mail → /mail/) не знает о срезанном внешним прокси префиксе.
+    location = /auth { return 301 ${BASE_PATH}/auth/; }
+    location = /mail { return 301 ${BASE_PATH}/mail/; }
+
+    # Админ-консоль Keycloak и мастер-realm снаружи не нужны, а это полный контроль над входом.
+    # Администрирование: kcadm.sh внутри контейнера keycloak.
+    location ~ ^/auth/(admin|realms/master)(/|$) {
+        return 404;
+    }
+
+    location /auth/ {
+        proxy_pass $keycloak_upstream;
+        # Keycloak ставит крупные cookie; дефолтных буферов nginx не хватает (502 "upstream sent too big header").
+        proxy_buffer_size 128k;
+        proxy_buffers 4 256k;
+        proxy_busy_buffers_size 256k;
+    }
+
+    location /mail/ {
+        # Внешний прокси срезает префикс BASE_PATH, а Mailpit ждёт его в пути (MP_WEBROOT): возвращаем.
+        proxy_pass $mailpit_upstream${BASE_PATH}$request_uri;
+        # Веб-интерфейс Mailpit обновляет список писем через websocket.
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade;
+    }
+
+    location / {
+        proxy_pass $frontend_upstream;
+    }
+}

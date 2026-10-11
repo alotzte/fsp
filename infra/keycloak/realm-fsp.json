@@ -1,0 +1,49 @@
+{
+  "realm": "fsp",
+  "bruteForceProtected": true,
+  "failureFactor": 10,
+  "actionTokenGeneratedByUserLifespan": 43200,
+  "enabled": true,
+  "displayName": "ФСП Карьера",
+  "registrationAllowed": true,
+  "registrationEmailAsUsername": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "verifyEmail": true,
+  "resetPasswordAllowed": true,
+  "rememberMe": false,
+  "passwordPolicy": "length(8) and notEmail",
+  "loginTheme": "fsp",
+  "internationalizationEnabled": true,
+  "supportedLocales": ["ru"],
+  "defaultLocale": "ru",
+  "smtpServer": {
+    "host": "mailpit",
+    "port": "1025",
+    "from": "noreply@fsp-career.local",
+    "fromDisplayName": "ФСП Карьера"
+  },
+  "clients": [
+    {
+      "clientId": "fsp-web",
+      "name": "ФСП Карьера",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "rootUrl": "${PUBLIC_URL}",
+      "baseUrl": "/api/v1/auth/login?next=%2Fonboarding",
+      "secret": "${KEYCLOAK_CLIENT_SECRET}",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": ["${PUBLIC_URL}/api/v1/auth/callback"],
+      "webOrigins": ["${PUBLIC_URL}"],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "${PUBLIC_URL}/*"
+      }
+    }
+  ]
+}
